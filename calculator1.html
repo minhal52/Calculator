@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+</head>
+<style>
+    table,
+    td {
+        border: 1px solid;
+    }
+
+    input {
+        border: none;
+        background-color: transparent;
+        width: 100%;
+    }
+
+    .showData {
+        display: none;
+    }
+
+    #td1,
+    #td2 {
+        border: none;
+    }
+
+    /* #out{
+        display: none;
+    } */
+</style>
+
+<body>
+    <table>
+        <tr>
+            <td colspan="3"> <input type="" id="result" oninput="res()"></td>
+            <td><input type="button" onclick="calculate('=')" value='='></td>
+        </tr>
+        <tr>
+            <td colspan="3"><input type="" id="out"></td>
+
+        </tr>
+        <tr>
+            <td> <input type="button" onclick="display('7')" value='7'></td>
+            <td><input type="button" onclick="display('8')" value='8'></td>
+            <td><input type="button" onclick="display('9')" value='9'></td>
+            <td><input type="button" onclick="calculate('+')" value='+'></td>
+        </tr>
+
+        <tr>
+            <td><input type="button" onclick="display('4')" value='4'></td>
+            <td><input type="button" onclick="display('5')" value='5'></td>
+            <td><input type="button" onclick="display('6')" value='6'></td>
+            <td><input type="button" onclick="calculate('-')" value='-'></td>
+        </tr>
+        <tr>
+            <td><input type="button" onclick="display('1')" value='1'></td>
+            <td><input type="button" onclick="display('2')" value='2'></td>
+            <td><input type="button" onclick="display('3')" value='3'></td>
+            <td><input type="button" onclick="calculate('*')" value='*'></td>
+        </tr>
+        <tr>
+            <td><input type="button" onclick="display('.')" value='.'></td>
+            <td><input type="button" onclick="display('0')" value='0'></td>
+            <td><input type="button" onclick="clear1('C')" value='C'></td>
+            <td><input type="button" onclick="calculate('/')" value='/'></td>
+        </tr>
+    </table>
+
+    <div class="showData">
+        <h2>History</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="td1"></td>
+                    <td id="td2"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let op1 = null, op2 = null;
+        let op = '';
+        let a = document.getElementById("result");
+        let b = document.getElementById("out");
+        let bb = b.value;
+        let arr = [];
+        let temp = false;
+    
+       
+        function display(val) {
+            if (temp) {
+                a.value = "";
+                temp = false;
+            }
+            a.value = a.value + val;
+            b.value = b.value + res();
+            // arr.push(a.value);
+        }
+        function res() {
+            let word = a.value;
+            const chars = word.split("");
+            const lastChar = chars.pop();
+            return lastChar;
+        }
+        function clear1() {
+            op1 = null;
+            a.value = "";
+            b.value = bb;
+        }
+        function calculate(opt) {
+            let res1;
+            if (op1 == null) {
+                op1 = a.value;
+                op = opt;
+                b.value = op1 + op;
+            } else if (opt != "=") {
+                op2 = a.value;
+                // b.value = op1 + op + op2;
+                if (op == '+')
+                    res1 = a.value = Number(op1) + Number(op2);
+                if (op == '-')
+                    res1 = a.value = Number(op1) - Number(op2);
+                if (op == '*')
+                    res1 = a.value = Number(op1) * Number(op2);
+                if (op == '/') {
+                    if (op2 == 0) {
+                        alert("cannot divide a number by zero"), clear1();
+                        a.value = "";
+                    } else {
+                        res1 = a.value = Number(op1) / Number(op2);
+                    }
+                }
+                arr.push(b.value + "=" + res1);
+                b.value = res1 + opt;
+                op1 = res1;
+            } else if (opt == "=") {
+                a.value = eval(b.value);
+                document.querySelector('.showData').style.display = 'block';
+                let tableBody = document.querySelector('.showData tbody');
+                
+                for (let i = 0; i < arr.length; i++) {
+                    let newRow = tableBody.insertRow();
+                    let cell1 = newRow.insertCell(0);
+                    let cell2 = newRow.insertCell(1);
+
+                    cell1.textContent = i + 1;
+                    cell2.textContent = arr[i];
+
+                }
+            }
+            op = opt;
+            temp = true;
+        }
+    </script>
+</body>
+
+</html>
